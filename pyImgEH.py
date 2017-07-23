@@ -7,8 +7,9 @@ import threading
 import urllib.request
 import urllib.error
 import bs4
+#replace url to start your own download
+url = "https://e-hentai.org/g/760646/13417c6f4a/"
 
-url = "https://e-hentai.org/g/1089972/f04bca6f3d/"
 dirname = os.getcwd()
 print_lock = threading.Lock()
 data_q = Queue()
