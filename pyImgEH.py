@@ -8,7 +8,7 @@ import urllib.request
 import urllib.error
 import bs4
 #replace url to start your own download
-url = "https://e-hentai.org/g/760646/13417c6f4a/"
+url = "https://e-hentai.org/g/1080929/7574e13d50/"
 
 dirname = os.getcwd()
 print_lock = threading.Lock()
@@ -18,9 +18,10 @@ MaxThread = 40
 
 def getImgAddr(numpages):
     print("Start to get imgURL")
+    #img addr list
     list = []
+
     addrlist = []
-    addrlist.append(url)
     for iStr in range(1,numpages+1):
         tmpAddr = url+"?p="+str(iStr)
         addrlist.append(tmpAddr)
@@ -34,6 +35,7 @@ def getImgAddr(numpages):
             list.append(tmpUrl)
     print("Get imgURL---------Done")
     return list
+
 def mkdir(path):
     tmppath = os.getcwd()+"\\"+path
     try:
