@@ -1,4 +1,4 @@
-# for e-hentai.org
+# for e-hentai.org 批量下载图片
 import os
 from queue import Queue
 import re
