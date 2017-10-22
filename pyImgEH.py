@@ -24,14 +24,14 @@ def getImgAddr(numpages):
     addrlist = []
     for iStr in range(1,numpages+1):
         tmpAddr = url+"?p="+str(iStr)
-
+        print(tmpAddr)
         addrlist.append(tmpAddr)
     i = 0
     for iAddr in addrlist:
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0",
         }
-        request = urllib.request.Request(url=url, headers=headers)
+        request = urllib.request.Request(url=iAddr, headers=headers)
         response = urllib.request.urlopen(request)
         raw = response.read().decode('utf-8')
         # with urllib.request.urlopen(iAddr) as html:
@@ -42,8 +42,8 @@ def getImgAddr(numpages):
         for iGdtm in tmp_gdtm:
             tmpUrl = iGdtm.find('a').get('href')
             id = j + i
-            # print(id)
-            list.append(urlset(id,tmpUrl))
+            print(tmpUrl)
+            list.append(tmpUrl)
             j+=1
         i+=j
 
@@ -64,12 +64,12 @@ def mkdir(path):
         pass
     return path
 
-def saveImg(imgset):
+def saveImg(imgUrl):
     time.sleep(0.1)
     with print_lock:
         #print(imgset.url)
-        imgUrl = imgset.url
-        imgName = str(imgset.id)
+        #imgUrl = imgset.url
+        imgName = imgUrl.split('-')[-1]
         # with urllib.request.urlopen(imgUrl) as html:
         #     rawurl = html.read()
         headers = {
