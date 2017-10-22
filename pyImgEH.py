@@ -8,7 +8,7 @@ import urllib.request
 import urllib.error
 import bs4
 #replace url to start your own download
-url = "https://e-hentai.org/g/1080929/7574e13d50/"
+url = "https://e-hentai.org/g/1012497/4aae504fe9/"
 
 dirname = os.getcwd()
 print_lock = threading.Lock()
@@ -24,49 +24,77 @@ def getImgAddr(numpages):
     addrlist = []
     for iStr in range(1,numpages+1):
         tmpAddr = url+"?p="+str(iStr)
+
         addrlist.append(tmpAddr)
+    i = 0
     for iAddr in addrlist:
-        with urllib.request.urlopen(iAddr) as html:
-            raw = html.read()
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0",
+        }
+        request = urllib.request.Request(url=url, headers=headers)
+        response = urllib.request.urlopen(request)
+        raw = response.read().decode('utf-8')
+        # with urllib.request.urlopen(iAddr) as html:
+        #     raw = html.read()
         soup = bs4.BeautifulSoup(raw, "html.parser")
         tmp_gdtm = soup.findAll('div', class_='gdtm')
+        j = 0
         for iGdtm in tmp_gdtm:
             tmpUrl = iGdtm.find('a').get('href')
-            list.append(tmpUrl)
+            id = j + i
+            # print(id)
+            list.append(urlset(id,tmpUrl))
+            j+=1
+        i+=j
+
     print("Get imgURL---------Done")
     return list
 
+class urlset:
+    id = 0
+    url = url
+    def __init__(self,id,url):
+        self.id = id
+        self.url = url
+
 def mkdir(path):
-    tmppath = os.getcwd()+"\\"+path
     try:
-        os.makedirs(tmppath)
+        os.makedirs(path)
     except:
-        print("DIR exist!")
-        exit()
-    return tmppath
-def saveImg(imgUrl):
+        pass
+    return path
+
+def saveImg(imgset):
     time.sleep(0.1)
     with print_lock:
-        imgName = imgUrl.split('-')[-1]
-        with urllib.request.urlopen(imgUrl) as html:
-            rawurl = html.read()
-            soup = bs4.BeautifulSoup(rawurl,"html.parser")
+        #print(imgset.url)
+        imgUrl = imgset.url
+        imgName = str(imgset.id)
+        # with urllib.request.urlopen(imgUrl) as html:
+        #     rawurl = html.read()
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0",
+        }
+        request = urllib.request.Request(url=imgUrl, headers=headers)
+        response = urllib.request.urlopen(request)
+        rawurl = response.read().decode('utf-8')
+        try:
+            soup = bs4.BeautifulSoup(rawurl,"lxml")
             tmpimgurl = soup.find(id='i3').find('img').get('src')
             extension = "."+tmpimgurl.split('.')[-1]
-            with urllib.request.urlopen(tmpimgurl) as imghtml:
-                rawimg = imghtml.read()
-                with open(imgName+extension,'wb') as file:
-                    file.write(rawimg)
-                print(imgName+extension,"------downloaded!")
-            # try:
-            #     raw = urllib.request.urlopen()
-            #     img = raw.read()
-            #     raw.close()
-            #     with open(imgData.dir+"\\"+imgName,'wb') as file:
-            #         file.write(img)
-            # except:
-            #     print("error:",imgName," not exist")
-            #     pass
+            request = urllib.request.Request(url=tmpimgurl, headers=headers)
+            response = urllib.request.urlopen(request)
+            rawimg = response.read()
+
+            # with urllib.request.urlopen(tmpimgurl) as imghtml:
+            #     rawimg = imghtml.read()
+            with open(imgName+extension,'wb') as file:
+                file.write(rawimg)
+            print(imgName+extension,"------downloaded!")
+        except:
+            print(imgUrl, "------Error!")
+            pass
+
 def worker():
     while True:
         tmpUrl = data_q.get()
@@ -84,8 +112,13 @@ def main():
     start = time.time()
 #----------------------------------
     raw = ""
-    with urllib.request.urlopen(url) as html:
-        raw = html.read()
+    headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0",
+    }
+    request = urllib.request.Request(url=url,headers=headers)
+    response = urllib.request.urlopen(request)
+    raw = response.read().decode('utf-8')
+    # raw = html.read()
     # with open("test2.html",'r+',encoding='utf-8') as file:
     #     raw = file.read()
     #     #print(raw)
