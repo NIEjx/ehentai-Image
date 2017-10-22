@@ -24,9 +24,8 @@ def getImgAddr(numpages):
     addrlist = []
     for iStr in range(1,numpages+1):
         tmpAddr = url+"?p="+str(iStr)
-        print(tmpAddr)
+        # print(tmpAddr)
         addrlist.append(tmpAddr)
-    i = 0
     for iAddr in addrlist:
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0",
@@ -38,14 +37,11 @@ def getImgAddr(numpages):
         #     raw = html.read()
         soup = bs4.BeautifulSoup(raw, "html.parser")
         tmp_gdtm = soup.findAll('div', class_='gdtm')
-        j = 0
         for iGdtm in tmp_gdtm:
             tmpUrl = iGdtm.find('a').get('href')
             id = j + i
-            print(tmpUrl)
+            # print(tmpUrl)
             list.append(tmpUrl)
-            j+=1
-        i+=j
 
     print("Get imgURL---------Done")
     return list
